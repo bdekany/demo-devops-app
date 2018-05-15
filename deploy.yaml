@@ -13,7 +13,7 @@ spec:
   externalIPs:
   - 10.0.0.5
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
@@ -52,7 +52,7 @@ spec:
     port: 6379
     targetPort: 6379
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
