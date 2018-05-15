@@ -1,0 +1,77 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: http-service
+spec:
+  selector:
+    app: devops
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 9000
+  externalIPs:
+  - 10.0.0.5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: devops
+  name: devops
+spec:
+  selector:
+    matchLabels:
+      app: devops
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: devops
+    spec:
+      containers:
+      - image: 10.0.0.4:5000/devops:${BUILD_NUMBER}
+        name: devops
+        ports:
+        - containerPort: 9000
+          name: devops
+      imagePullSecrets:
+      - name: myregistrykey
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+  ports:
+  - name: redis
+    protocol: TCP
+    port: 6379
+    targetPort: 6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - image: redis:4
+        name: redis
+        ports:
+        - containerPort: 6379
+          name: redis
