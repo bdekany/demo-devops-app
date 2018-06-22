@@ -1,17 +1,29 @@
-kind: Service
+---
 apiVersion: v1
+kind: Service
 metadata:
-  name: http-service
+  name: demo-web
 spec:
   selector:
     app: devops
   ports:
-  - name: http
-    protocol: TCP
+  - name: web
     port: 80
     targetPort: 9000
-  externalIPs:
-  - 10.0.0.5
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: demo-web
+spec:
+  rules:
+  - host: app1.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: demo-web
+          servicePort: web
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -31,13 +43,11 @@ spec:
         app: devops
     spec:
       containers:
-      - image: 10.0.0.4:5000/devops:${BUILD_NUMBER}
+      - image: registry.opensuse.org/home/bdekany/branches/opensuse/templates/images/42.3/containers/demo-devops-app:latest
         name: devops
         ports:
         - containerPort: 9000
           name: devops
-      imagePullSecrets:
-      - name: myregistrykey
 ---
 kind: Service
 apiVersion: v1
