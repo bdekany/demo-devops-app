@@ -1,0 +1,7 @@
+---
+applications:
+- name: my-demo-app
+  memory: 512M
+  instances: 1
+  random-route: true
+  buildpack: python_buildpack
